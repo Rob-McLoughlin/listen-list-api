@@ -1,3 +1,4 @@
+
 import pytest
 import utils
 
@@ -7,3 +8,8 @@ def test_format_response():
   response = utils.format_response(statusCode, {"body": message})
   assert type(response) == dict
   assert response['statusCode'] == 200
+
+def test_keys():
+  assert type(utils.keys()) == dict
+  assert type(utils.keys('cog_app_id')) == str
+  assert utils.keys('abc') == None
