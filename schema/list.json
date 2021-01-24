@@ -1,0 +1,21 @@
+{
+  "list": {
+    "owner_id": 123,
+    "created_at": "2020-01-24T00:00",
+    "updated_at": "2020-01-24T00:00",
+    "list_title": "Test",
+    "albums": [
+      {
+        "album_id": 123,
+        "artist_id": 123,
+        "artist_title": "Radiohead",
+        "album_title": "Kid A",
+        "spotify_link": "https://open.spotify.com/album/6GjwtEZcfenmOf6l18N7T7?si=im-0p4eEQz2Nz6zM6JprLA",
+        "spotify_album_id": 123,
+        "spotify_artist_id": 123,
+        "rating": 9,
+        "listened_to": false
+      }
+    ]
+  }
+}
