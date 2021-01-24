@@ -4,7 +4,7 @@ from requests.auth import HTTPBasicAuth
 import utils
 import base64
 import urllib.parse
-from pprint import pprint
+import time
 
 def sy_get_token(client_id: str, client_secret: str) -> dict:
   """Gets a Spotify token
@@ -21,7 +21,10 @@ def sy_get_token(client_id: str, client_secret: str) -> dict:
   data = {'grant_type': 'client_credentials'}
   r = requests.post(url, data, auth=HTTPBasicAuth(client_id, client_secret))
   if r.status_code == 200:
-    return r.json()
+    token = r.json()
+    timestamp = round(time.time())
+    token['created_at'] = timestamp
+    return token
   else:
     raise ValueError(f"{r.status_code}, {r.text}")
 
@@ -50,9 +53,10 @@ if __name__ == '__main__':
   client_id = utils.keys('sy_client_id')
   client_secret = utils.keys('sy_client_secret')
   token = sy_get_token(client_id, client_secret)
-  results = sy_search('Kid A', token)
-  albums = [album for album in results['albums']['items']]
-  artists = [artist for artist in results['artists']['items']]
-  print(f"There are {len(albums)} albums and {len(artists)} artists found")
+  print('Token', token)
+  # results = sy_search('Kid A', token)
+  # albums = [album for album in results['albums']['items']]
+  # artists = [artist for artist in results['artists']['items']]
+  # print(f"There are {len(albums)} albums and {len(artists)} artists found")
   # print('Artists:', [artist['name'] for artist in artist])
   # print(results)

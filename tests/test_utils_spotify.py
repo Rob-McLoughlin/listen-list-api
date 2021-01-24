@@ -8,6 +8,7 @@ def test_sy_get_token():
   token = utils_spotify.sy_get_token(client_id, client_secret)
   assert type(token) == dict
   assert 'access_token' in token
+  assert 'created_at' in token
   with pytest.raises(ValueError):
     utils_spotify.sy_get_token('', client_secret)
 
