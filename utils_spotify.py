@@ -25,16 +25,17 @@ def sy_get_token(client_id: str, client_secret: str) -> dict:
   else:
     raise ValueError(f"{r.status_code}, {r.text}")
 
-def sy_search(term: str, key: dict):
+def sy_search(term: str, key: dict, search_type='album,artist'):
   """Searches spotify for albums and artists
 
   Args:
       term (str): The search term
-      key (dict): A key object
+      key (dict): A key object,
+      search_type (str, optional): comma separated types to search. Defaults to album,artist.
   """
   query = {
     "q": term,
-    "type": 'album,artist'
+    "type": search_type
   }
   url = 'https://api.spotify.com/v1/search?{}'.format(urllib.parse.urlencode(query))
   headers = {'Authorization': f"Bearer {key['access_token']}"}
