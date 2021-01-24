@@ -5,6 +5,7 @@ import utils
 import base64
 import urllib.parse
 import time
+from datetime import datetime
 
 def sy_get_token(client_id: str, client_secret: str) -> dict:
   """Gets a Spotify token
@@ -27,6 +28,22 @@ def sy_get_token(client_id: str, client_secret: str) -> dict:
     return token
   else:
     raise ValueError(f"{r.status_code}, {r.text}")
+
+def sy_check_token(token: dict) -> bool:
+  """Checks if a token dict is still in date
+
+  Args:
+      token (dict): The token object
+
+  Returns:
+      bool: Whether the token is valid or not
+  """
+  expiry_sec = token['expires_in']
+  created_at = token['created_at']
+  new_timestamp = created_at + expiry_sec
+  return new_timestamp > float(time.time())
+
+
 
 def sy_search(term: str, key: dict, search_type='album,artist'):
   """Searches spotify for albums and artists
