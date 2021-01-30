@@ -1,3 +1,5 @@
+import os, sys
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
 import pytest
 import utils_spotify
 import utils
