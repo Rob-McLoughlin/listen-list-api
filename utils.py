@@ -4,6 +4,7 @@ from boto3.dynamodb.types import TypeDeserializer
 from botocore.exceptions import ClientError
 from datetime import datetime
 import uuid
+import decimal
 
 
 def format_response(status: int, body: dict) -> dict:
@@ -28,6 +29,17 @@ def keys(key=None) -> dict:
                 return None
         return data
 
+def replace_decimals(obj):
+    """
+    Convert all whole number decimals in `obj` to integers
+    """
+    if isinstance(obj, list):
+        return [replace_decimals(i) for i in obj]
+    elif isinstance(obj, dict):
+        return {k: replace_decimals(v) for k, v in obj.items()}
+    elif isinstance(obj, decimal.Decimal):
+        return int(obj) if obj % 1 == 0 else obj
+    return obj
 
 def create_ll(owner_id: int, title: str, albums: list) -> dict:
     """Creates a new listen list in the database
@@ -122,4 +134,6 @@ if __name__ == "__main__":
     # title = 'Listen List 1'
     # create_ll(owner_id, title, albums)
     ll = get_ll("248c917e-a9ce-47a2-8c28-73fa594452e2")
-    print(ll["albums"])
+    ll = replace_decimals(ll)
+    # print(ll["albums"])
+    print(json.dumps(ll))
