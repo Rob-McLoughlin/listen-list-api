@@ -11,6 +11,7 @@ pylint = "*"
 pytest = "*"
 boto3 = "*"
 requests = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.8"

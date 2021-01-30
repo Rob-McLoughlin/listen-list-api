@@ -1,0 +1,22 @@
+# Python CircleCI 2.0 configuration file
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.8
+
+    working_directory: ~/listen-list-api
+
+    steps:
+      # Step 1: obtain repo from GitHub
+      - checkout
+      # Step 2: create virtual env and install dependencies
+      - run:
+          name: install dependencies
+          command: |
+            pipenv install
+      # Step 3: run tests
+      - run:
+          name: run tests
+          command: |
+            pipenv run pytest -v
