@@ -48,9 +48,18 @@ jobs:
       - image: cimg/node:15.6.0
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - cache-{{ checksum "package-lock.json" }}
+            - cache-
       - run:
           name:  "Install NPM"
           command: npm install
       - run:
           name:  "Semantic Release"
           command: npx semantic-release
+      - save_cache:
+          key: cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.local
+            - ~/.cache
