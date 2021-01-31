@@ -1,10 +1,12 @@
 version: 2.1
 
 workflows:
-  pytest:
+  test_and_release:
     jobs:
       - test:
           context: AWS
+      - release:
+          context: Github
 
 jobs:
   test:
@@ -38,4 +40,15 @@ jobs:
           name: "Run PyTest"
           command: |
             pipenv run pytest
+
+  release:
+    working_directory: ~/repo
+
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - run: npm install
+      # Run optional required steps before releasing
+      - run: npx semantic-release
       
