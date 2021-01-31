@@ -8,7 +8,7 @@ workflows:
   release:
     when:
       and:
-        - equal: [ master, << pipeline.git.branch >> ]
+        - equal: [ main, << pipeline.git.branch >> ]
     jobs:
       - release:
           context: Github

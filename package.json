@@ -24,8 +24,7 @@
   },
   "release": {
     "branches": [
-      "main",
-      "ci/semantic-release"
+      "main"
     ],
     "plugins": [
       "@semantic-release/commit-analyzer",
