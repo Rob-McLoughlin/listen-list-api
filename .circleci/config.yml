@@ -1,7 +1,7 @@
 version: 2.1
 
 workflows:
-  test-env-vars:
+  pytest:
     jobs:
       - build:
           context: AWS # has an env var called AWS_PROFILE
@@ -21,7 +21,7 @@ jobs:
       - run: 
           name: "Install Dependencies"
           command: |
-            echo $AWS_PROFILE
+            pipenv install
 
       # Run pytest
       - run:
