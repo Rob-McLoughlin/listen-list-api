@@ -8,12 +8,23 @@ workflows:
 
 jobs:
   build:
+    working_directory: ~/repo
+
     docker:
       - image: circleci/python:3.8
-        auth:
+
     steps:
+      # Get the code
       - checkout
+
+      # Install the dependencies
       - run: 
-          name: "echo an env var that is part of our context"
+          name: "Install Dependencies"
           command: |
             echo $AWS_PROFILE
+
+      # Run pytest
+      - run:
+        name: "Run PyTest"
+        command: pipenv run pytest -v -k keys
+      
