@@ -5,6 +5,7 @@ from botocore.exceptions import ClientError
 from datetime import datetime
 import uuid
 import decimal
+import base64
 
 
 def format_response(status: int, body: dict) -> dict:
@@ -12,7 +13,7 @@ def format_response(status: int, body: dict) -> dict:
 
 
 def keys(key=None) -> dict:
-    """Returns data from the credentials file
+    """Returns data from ssm
 
     Args:
         key (str, optional): Optional filter to return one value. Defaults to None.
@@ -20,14 +21,54 @@ def keys(key=None) -> dict:
     Returns:
         dict: The data in the credentials file
     """
-    with open("credentials.json", "r") as data_file:
-        data = json.load(data_file)
-        if key is not None:
-            if key in data:
-                return data[key]
-            else:
-                return None
-        return data
+
+    # Create a Secrets Manager client
+    session = boto3.session.Session()
+    client = session.client(service_name="secretsmanager", region_name="eu-west-1")
+
+    # In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
+    # See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+    # We rethrow the exception by default.
+
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId="ListenList")
+    except ClientError as e:
+        if e.response["Error"]["Code"] == "DecryptionFailureException":
+            # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
+        elif e.response["Error"]["Code"] == "InternalServiceErrorException":
+            # An error occurred on the server side.
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
+        elif e.response["Error"]["Code"] == "InvalidParameterException":
+            # You provided an invalid value for a parameter.
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
+        elif e.response["Error"]["Code"] == "InvalidRequestException":
+            # You provided a parameter value that is not valid for the current state of the resource.
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
+        elif e.response["Error"]["Code"] == "ResourceNotFoundException":
+            # We can't find the resource that you asked for.
+            # Deal with the exception here, and/or rethrow at your discretion.
+            raise e
+    else:
+        # Decrypts secret using the associated KMS CMK.
+        # Depending on whether the secret is a string or binary, one of these fields will be populated.
+        if "SecretString" in get_secret_value_response:
+            secret = json.loads(get_secret_value_response["SecretString"])
+            if key:
+                return secret.get(key)
+            return secret
+        else:
+            decoded_binary_secret = json.loads(
+                base64.b64decode(get_secret_value_response["SecretBinary"])
+            )
+            if key:
+                return decoded_binary_secret.get(key)
+            return decoded_binary_secret
+
 
 def replace_decimals(obj):
     """
@@ -40,6 +81,7 @@ def replace_decimals(obj):
     elif isinstance(obj, decimal.Decimal):
         return int(obj) if obj % 1 == 0 else obj
     return obj
+
 
 def create_ll(owner_id: int, title: str, albums: list) -> dict:
     """Creates a new listen list in the database
@@ -133,7 +175,9 @@ if __name__ == "__main__":
     # owner_id = 0
     # title = 'Listen List 1'
     # create_ll(owner_id, title, albums)
-    ll = get_ll("248c917e-a9ce-47a2-8c28-73fa594452e2")
-    ll = replace_decimals(ll)
+    # ll = get_ll("248c917e-a9ce-47a2-8c28-73fa594452e2")
+    # ll = replace_decimals(ll)
     # print(ll["albums"])
-    print(json.dumps(ll))
+    # print(json.dumps(ll))
+    secret = keys()
+    print(secret)
