@@ -25,6 +25,7 @@ jobs:
 
       # Run pytest
       - run:
-        name: "Run PyTest"
-        command: pipenv run pytest -v -k keys
+          name: "Run PyTest"
+          command: |
+            pipenv run pytest -v -k keys
       
