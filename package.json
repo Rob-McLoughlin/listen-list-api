@@ -23,6 +23,6 @@
     }
   },
   "release": {
-    "branches": ["main"]
+    "branches": ["main", "ci/semantic-release"]
   }
 }

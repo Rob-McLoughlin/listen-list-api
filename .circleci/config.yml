@@ -5,8 +5,6 @@ workflows:
     jobs:
       - test:
           context: AWS
-      - release:
-          context: Github
   release:
     jobs:
       - release:
@@ -50,7 +48,9 @@ jobs:
       - image: cimg/node:15.6.0
     steps:
       - checkout
-      - run: npm install
-      # Run optional required steps before releasing
-      # - run: npm run build-script
-      - run: npx semantic-release
+      - run:
+          name:  "Install NPM"
+          command: npm install
+      - run:
+          name:  "Semantic Release"
+          command: npx semantic-release
