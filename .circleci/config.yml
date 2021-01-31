@@ -4,7 +4,7 @@ workflows:
   pytest:
     jobs:
       - test:
-          context: AWS # has an env var called AWS_PROFILE
+          context: AWS
 
 jobs:
   test:
@@ -16,12 +16,20 @@ jobs:
     steps:
       # Get the code
       - checkout
+      
+      - restore_cache:
+          key: -v3-{{ checksum "Pipfile" }}
 
       # Install the dependencies
       - run: 
           name: "Install Dependencies"
           command: |
             pipenv install
+
+      - save_cache:
+          key: -v3-{{ checksum "Pipfile" }}
+          paths:
+            - ".venv"
 
       # Run pytest
       - run:
