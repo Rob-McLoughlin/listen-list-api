@@ -18,18 +18,20 @@ jobs:
       - checkout
       
       - restore_cache:
-          key: -v3-{{ checksum "Pipfile" }}
+          keys:
+            - cache-{{ checksum "Pipfile.lock" }}
+            - cache-
 
       # Install the dependencies
       - run: 
           name: "Install Dependencies"
-          command: |
-            pipenv install
+          command: pipenv sync --dev
 
       - save_cache:
-          key: -v3-{{ checksum "Pipfile" }}
+          key: cache-{{ checksum "Pipfile.lock" }}
           paths:
-            - ".venv"
+            - ~/.local
+            - ~/.cache
 
       # Run pytest
       - run:
