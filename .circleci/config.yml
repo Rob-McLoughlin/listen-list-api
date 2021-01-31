@@ -1,11 +1,14 @@
 version: 2.1
 
 workflows:
-  # test:
-  #   jobs:
-  #     - test:
-  #         context: AWS
+  test:
+    jobs:
+      - test:
+          context: AWS
   release:
+    when:
+      and:
+        - equal: [ master, << pipeline.git.branch >> ]
     jobs:
       - release:
           context: Github
