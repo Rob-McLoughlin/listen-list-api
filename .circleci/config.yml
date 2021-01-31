@@ -4,7 +4,7 @@ workflows:
   test-env-vars:
     jobs:
       - build:
-          context: aws # has an env var called AWS_PROFILE
+          context: AWS # has an env var called AWS_PROFILE
 
 jobs:
   build:
