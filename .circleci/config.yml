@@ -1,10 +1,14 @@
 version: 2.1
 
 workflows:
-  test_and_release:
+  test:
     jobs:
       - test:
           context: AWS
+      - release:
+          context: Github
+  release:
+    jobs:
       - release:
           context: Github
 
@@ -42,13 +46,11 @@ jobs:
             pipenv run pytest
 
   release:
-    working_directory: ~/repo
-
     docker:
-      - image: circleci/python:3.8
+      - image: cimg/node:15.6.0
     steps:
       - checkout
       - run: npm install
       # Run optional required steps before releasing
+      # - run: npm run build-script
       - run: npx semantic-release
-      
