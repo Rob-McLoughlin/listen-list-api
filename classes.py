@@ -1,4 +1,5 @@
 from marshmallow import fields, Schema, post_load
+from datetime import datetime
 
 # Artist
 class Artist:
@@ -53,6 +54,27 @@ class AlbumSchema(Schema):
     def create_album(self, data, **kwargs):
         return Album(**data)
 
+class ListenList:
+    def __init__(self, list_id: str, owner_id: str, created_at: str, updated_at: str, list_title: str, albums: list):
+        self.list_id = list_id
+        self.owner_id = owner_id
+        self.created_at = created_at
+        self.updated_at = updated_at
+        self.list_title = list_title
+        self.albums = albums
+
+class ListenListSchema(Schema):
+    list_id = fields.Str()
+    owner_id = fields.Str()
+    created_at = fields.DateTime()
+    updated_at = fields.DateTime()
+    list_title = fields.Str()
+    albums = fields.List(fields.Nested(AlbumSchema))
+
+    @post_load
+    def create_ll(self, data, **kwargs):
+        return ListenList(**data)
+
 
 if __name__ == "__main__":
     images = [
@@ -90,7 +112,16 @@ if __name__ == "__main__":
         "listened_to": False
     }
 
-    schema = AlbumSchema()
-    result = schema.load(album_data)
-
-    print(schema.dump(result))
+    owner_id = 0
+    title = 'Listen List 1'
+    albums = [AlbumSchema().dump(album_data)]
+    ll_data = {
+        'list_id': 'abc-123',
+        'owner_id': 'xyz',
+        'list_title': 'List Title One',
+        'created_at': datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        'updated_at': datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        'albums': albums
+    }
+    listen_list = ListenListSchema().load(ll_data)
+    print(ListenListSchema().dumps(listen_list))
