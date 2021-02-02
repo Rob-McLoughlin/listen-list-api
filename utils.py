@@ -97,8 +97,8 @@ def create_ll(owner_id: int, title: str, albums: list) -> dict:
     item = {
         "list_id": str(uuid.uuid4()),
         "owner_id": owner_id,
-        "created_at": datetime.now().strftime("%Y/%m/%dT%H:%M:%S"),
-        "updated_at": datetime.now().strftime("%Y/%m/%dT%H:%M:%S"),
+        "created_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "updated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
         "list_title": title,
         "albums": albums,
     }
