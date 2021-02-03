@@ -97,15 +97,14 @@ class ListenList:
         """
         self.albums.append(album)
 
-    # def remove_albums(self, album_ids: list):
-    #     """Removes an album based on the ID
+    def remove_albums(self, album_ids: list):
+        """Removes an album based on the ID
 
-    #     Args:
-    #         album_id (str): The id of the album to remove
-    #     """
-    #     updated_albums = [album for album in self.albums if album.get('spotify_id') not in album_ids]
-    #     self.albums = updated_albums
-    #     print(updated_albums)
+        Args:
+            album_id (str): The id of the album to remove
+        """
+        updated_albums = [album for album in self.albums if album.spotify_id not in album_ids]
+        self.albums = updated_albums
 
 class ListenListSchema(Schema):
     list_id = fields.Str()
