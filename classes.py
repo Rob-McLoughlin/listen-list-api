@@ -88,6 +88,24 @@ class ListenList:
         self.updated_at = updated_at
         self.list_title = list_title
         self.albums = albums
+    
+    def add_album(self, album: Album):
+        """Adds an album object to the the list of albums
+
+        Args:
+            album (Album): An album.
+        """
+        self.albums.append(album)
+
+    # def remove_albums(self, album_ids: list):
+    #     """Removes an album based on the ID
+
+    #     Args:
+    #         album_id (str): The id of the album to remove
+    #     """
+    #     updated_albums = [album for album in self.albums if album.get('spotify_id') not in album_ids]
+    #     self.albums = updated_albums
+    #     print(updated_albums)
 
 class ListenListSchema(Schema):
     list_id = fields.Str()
@@ -103,51 +121,4 @@ class ListenListSchema(Schema):
 
 
 if __name__ == "__main__":
-    images = [
-        {
-            "height": 640,
-            "url": "https://i.scdn.co/image/ab67616d0000b273674c2b8b77e1e9259a2fcb87",
-            "width": 640,
-        },
-        {
-            "height": 300,
-            "url": "https://i.scdn.co/image/ab67616d00001e02674c2b8b77e1e9259a2fcb87",
-            "width": 300,
-        },
-        {
-            "height": 64,
-            "url": "https://i.scdn.co/image/ab67616d00004851674c2b8b77e1e9259a2fcb87",
-            "width": 64,
-        },
-    ]
-
-    artists = [
-        {
-            "name": "Radiohead",
-            "spotify_url": "https://open.spotify.com/artist/4Z8W4fKeB5YxbusRsdQVPb",
-        }
-    ]
-
-    album_data = {
-        "spotify_id": "6GjwtEZcfenmOf6l18N7T7",
-        "spotify_url": "https://open.spotify.com/album/6GjwtEZcfenmOf6l18N7T7",
-        "title": "Kid A",
-        "images": images,
-        "artists": artists,
-        "rating": 0,
-        "listened_to": False,
-    }
-
-    owner_id = 0
-    title = "Listen List 1"
-    albums = [AlbumSchema().dump(album_data)]
-    ll_data = {
-        "list_id": "abc-123",
-        "owner_id": "xyz",
-        "list_title": "List Title One",
-        "created_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "updated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "albums": albums,
-    }
-    listen_list = ListenListSchema().load(ll_data)
-    print(ListenListSchema().dumps(listen_list))
+    pass
