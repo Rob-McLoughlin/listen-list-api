@@ -1,15 +1,16 @@
-POST http://127.0.0.1:5000/register HTTP/1.1
+POST http://127.0.0.1:5000/lists/create HTTP/1.1
 Content-Type: application/json
 
 {
-  "first_name": "Rob",
-  "last_name": "McLoughlin",
-  "email": "robbiemcloughlin@gmail.com",
-  "username": "rob",
-  "password": "testing123"
+  "owner_id": "f50ec0b7-f960-400d-91f0-c42a6d44e3d0"
 }
 
 ###
 
 GET http://127.0.0.1:5000/search?q=Kid+A  HTTP/1.1
+Content-Type: application/json
+
+###
+
+DELETE http://127.0.0.1:5000/lists/delete/293f4dec-71de-4ef8-935d-bfd216749419 HTTP/1.1
 Content-Type: application/json

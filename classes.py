@@ -109,6 +109,7 @@ class ListenList:
     def store(self):
         """Stores the ll in dynamo
         """
+        print('Saving List')
         schema = ListenListSchema()
         item = schema.dump(self)
         db = boto3.resource("dynamodb")
@@ -128,6 +129,7 @@ class ListenList:
         table = db.Table("ListenList")
         response = table.delete_item(Key=key)
         if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
+            print('Deleted List')
             return True
         return False
 
