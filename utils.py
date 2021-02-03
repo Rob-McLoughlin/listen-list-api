@@ -81,7 +81,7 @@ def ll_store(listen_list: ListenList) -> dict:
         return item
     return False
 
-
+# TODO: Replace with serialisation
 def dynamo_to_dict(dynamo_response: dict) -> dict:
     """Takes a dynamo response and turns it into a dict
 
@@ -132,6 +132,8 @@ def get_ll(list_id: str) -> dict:
     except ClientError as err:
         raise err
 
+def ll_create(data) -> ListenList:
+    return ListenListSchema().load(data)
 
 if __name__ == "__main__":
     images = [
@@ -200,6 +202,7 @@ if __name__ == "__main__":
     # Remove the album
     ll.remove_albums(['6GjwtEZcfenmOf6l18N7T7'])
     print([album.title for album in ll.albums])
+    print(ListenListSchema().dump(ll))
     # Save the List
     ll_store(ll)
     
