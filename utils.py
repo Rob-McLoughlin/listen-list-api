@@ -6,6 +6,7 @@ from datetime import datetime
 import uuid
 import decimal
 import base64
+from classes import ListenList, ListenListSchema, AlbumSchema
 
 
 def format_response(status: int, body: dict) -> dict:
@@ -83,29 +84,12 @@ def replace_decimals(obj):
     return obj
 
 
-def create_ll(owner_id: int, title: str, albums: list) -> dict:
-    """Creates a new listen list in the database
-
-    Args:
-        owner_id (int): The owner of the list
-        title (str): The title of the list
-        albums (list): List of album objects
-
-    Returns:
-        dict: The list item that was created
-    """
-    item = {
-        "list_id": str(uuid.uuid4()),
-        "owner_id": owner_id,
-        "created_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "updated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "list_title": title,
-        "albums": albums,
-    }
+def ll_store(listen_list: ListenList) -> dict:
+    schema = ListenListSchema()
+    item = schema.dump(listen_list)
     db = boto3.resource("dynamodb")
     table = db.Table("ListenList")
     response = table.put_item(Item=item)
-    print(response)
     if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
         return item
     return False
@@ -145,9 +129,13 @@ def get_ll(list_id: str) -> dict:
     try:
         response = table.get_item(Key=key)
         item = response["Item"]
-        # print(item)
         data = dynamo_to_dict(item)
-        return data
+        # print(data)
+        try:
+            listen_list = ListenListSchema().load(data)
+            return listen_list
+        except ClientError as err:
+            raise err
         # print(item.keys())
         # To go from low-level format to python
         # return deserialised
@@ -159,25 +147,66 @@ def get_ll(list_id: str) -> dict:
 
 
 if __name__ == "__main__":
-    # albums = [
-    #   {
-    #     "album_id": 123,
-    #     "artist_id": 123,
-    #     "artist_title": "Radiohead",
-    #     "album_title": "Kid A",
-    #     "spotify_link": "https://open.spotify.com/album/6GjwtEZcfenmOf6l18N7T7?si=im-0p4eEQz2Nz6zM6JprLA",
-    #     "spotify_album_id": 123,
-    #     "spotify_artist_id": 123,
-    #     "rating": 9,
-    #     "listened_to": False
-    #   }
-    # ]
-    # owner_id = 0
-    # title = 'Listen List 1'
-    # create_ll(owner_id, title, albums)
-    # ll = get_ll("248c917e-a9ce-47a2-8c28-73fa594452e2")
-    # ll = replace_decimals(ll)
-    # print(ll["albums"])
-    # print(json.dumps(ll))
-    secret = keys()
-    print(secret)
+    images = [
+        {
+            "height": 640,
+            "url": "https://i.scdn.co/image/ab67616d0000b273674c2b8b77e1e9259a2fcb87",
+            "width": 640,
+        },
+        {
+            "height": 300,
+            "url": "https://i.scdn.co/image/ab67616d00001e02674c2b8b77e1e9259a2fcb87",
+            "width": 300,
+        },
+        {
+            "height": 64,
+            "url": "https://i.scdn.co/image/ab67616d00004851674c2b8b77e1e9259a2fcb87",
+            "width": 64,
+        },
+    ]
+
+    artists = [
+        {
+            "name": "Radiohead",
+            "spotify_url": "https://open.spotify.com/artist/4Z8W4fKeB5YxbusRsdQVPb",
+        }
+    ]
+
+    album_data = {
+        "spotify_id": "6GjwtEZcfenmOf6l18N7T7",
+        "spotify_url": "https://open.spotify.com/album/6GjwtEZcfenmOf6l18N7T7",
+        "title": "OK Computer",
+        "images": images,
+        "artists": artists,
+        "rating": 0,
+        "listened_to": False,
+    }
+
+    kid_a_data = {
+        "spotify_id": "6GjwtEZcfenmOf6l18N7T7",
+        "spotify_url": "https://open.spotify.com/album/6GjwtEZcfenmOf6l18N7T7",
+        "title": "Kid A",
+        "images": images,
+        "artists": artists,
+        "rating": 0,
+        "listened_to": False,
+    }
+
+    albums = [AlbumSchema().dump(album_data)]
+    ll_data = {
+        "list_id": "abc-123",
+        "owner_id": "xyz",
+        "list_title": "List Title One",
+        "created_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "updated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "albums": albums,
+    }
+    # listen_list = ListenListSchema().load(ll_data)
+    # ll_store(listen_list)
+    # print(ListenListSchema().dump(listen_list))
+    # Store the list
+    # ll_store(listen_list)
+    ll = get_ll('abc-123')
+    ll.add_album(AlbumSchema().load(kid_a_data))
+    
+    
