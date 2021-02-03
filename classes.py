@@ -105,6 +105,31 @@ class ListenList:
         """
         updated_albums = [album for album in self.albums if album.spotify_id not in album_ids]
         self.albums = updated_albums
+    
+    def store(self):
+        """Stores the ll in dynamo
+        """
+        schema = ListenListSchema()
+        item = schema.dump(self)
+        db = boto3.resource("dynamodb")
+        table = db.Table("ListenList")
+        response = table.put_item(Item=item)
+        if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
+            return item
+        return False
+
+    def delete(self):
+        """Deletes the ll from dynamo
+        """
+        key = {
+            "list_id": self.list_id,
+        }
+        db = boto3.resource("dynamodb")
+        table = db.Table("ListenList")
+        response = table.delete_item(Key=key)
+        if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
+            return True
+        return False
 
 class ListenListSchema(Schema):
     list_id = fields.Str()

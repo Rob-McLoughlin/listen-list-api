@@ -71,16 +71,6 @@ def keys(key=None) -> dict:
             return decoded_binary_secret
 
 
-def ll_store(listen_list: ListenList) -> dict:
-    schema = ListenListSchema()
-    item = schema.dump(listen_list)
-    db = boto3.resource("dynamodb")
-    table = db.Table("ListenList")
-    response = table.put_item(Item=item)
-    if response["ResponseMetadata"]["HTTPStatusCode"] == 200:
-        return item
-    return False
-
 # TODO: Replace with serialisation
 def dynamo_to_dict(dynamo_response: dict) -> dict:
     """Takes a dynamo response and turns it into a dict
@@ -180,29 +170,29 @@ if __name__ == "__main__":
         "listened_to": False,
     }
 
-    # albums = [AlbumSchema().dump(album_data)]
-    # ll_data = {
-    #     "list_id": "abc-123",
-    #     "owner_id": "xyz",
-    #     "list_title": "List Title One",
-    #     "created_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-    #     "updated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-    #     "albums": albums,
-    # }
-    # listen_list = ListenListSchema().load(ll_data)
+    albums = [AlbumSchema().dump(album_data)]
+    ll_data = {
+        "list_id": "abc-124",
+        "owner_id": "xyz",
+        "list_title": "List Title One",
+        "created_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "updated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "albums": albums,
+    }
+    ll = ListenListSchema().load(ll_data)
     # ll_store(listen_list)
     # print(ListenListSchema().dump(listen_list))
     # Store the list
     # ll_store(listen_list)
     # Get a list
-    ll = get_ll('abc-123')
+    # ll = get_ll('abc-123')
     # Add an album
     ll.add_album(AlbumSchema().load(kid_a_data))
     print([album.title for album in ll.albums])
     # Remove the album
     ll.remove_albums(['6GjwtEZcfenmOf6l18N7T7'])
     print([album.title for album in ll.albums])
-    print(ListenListSchema().dump(ll))
+    # print(ListenListSchema().dump(ll))
     # Save the List
-    ll_store(ll)
-    
+    ll.store()
+    ll.delete()
