@@ -88,7 +88,7 @@ def test_create_ll():
 def test_store_ll():
     listen_list = utils.ll_create(ll_data)
     list_id = listen_list.list_id
-    assert utils.ll_store(listen_list) != False
+    assert listen_list.store() != False
     assert utils.get_ll(list_id) != None
 
 
