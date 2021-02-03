@@ -12,6 +12,7 @@ pytest = "*"
 boto3 = "*"
 requests = "*"
 pytest-cov = "*"
+marshmallow = "*"
 
 [requires]
 python_version = "3.8"
