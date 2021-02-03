@@ -2,6 +2,9 @@ version: 2.1
 
 workflows:
   test:
+    when:
+        and:
+          - equal: [ main, << pipeline.git.branch >> ]
     jobs:
       - test:
           context: AWS
