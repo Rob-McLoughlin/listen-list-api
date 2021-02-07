@@ -13,6 +13,7 @@ boto3 = "*"
 requests = "*"
 pytest-cov = "*"
 marshmallow = "*"
+python-jose = "*"
 
 [requires]
 python_version = "3.8"
