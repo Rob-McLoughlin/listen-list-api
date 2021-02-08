@@ -3,6 +3,8 @@ import uuid
 from datetime import datetime
 from classes import ListenList, ListenListSchema
 import utils_spotify
+import utils_user
+import jwt
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -56,3 +58,27 @@ def delete_list(list_id):
     ll.delete()
     response = utils.format_response(200, 'Deleted List')
     return response
+
+@app.route("/users/create", methods=["POST"])
+def create_new_user():
+    username = request.json.get('username')
+    email = request.json.get('email')
+    password = request.json.get('password')
+    sign_up_request = utils_user.sign_up(username, email, password)
+    return utils.format_response(200, sign_up_request)
+    
+
+@app.route("/users/login", methods=["POST"])
+def sign_in():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    sign_in_request = utils_user.sign_in(username, password)
+    return utils.format_response(200, sign_in_request)
+    
+    
+@app.route("/users/extend", methods=["POST"])
+def extend_token():
+    refresh_token = request.json.get('refresh_token')
+    refresh_request = jwt.extend_token(refresh_token)
+    return utils.format_response(200, refresh_request)
+    

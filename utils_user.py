@@ -16,6 +16,7 @@ def sign_up(username: str, email: str, password: str):
     ],
   )
   print(response)
+  return response
 
 def sign_in(username: str, password: str):
   client = boto3.client('cognito-idp')
