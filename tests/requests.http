@@ -1,9 +1,6 @@
 POST http://127.0.0.1:5000/lists/create HTTP/1.1
 Content-Type: application/json
-
-{
-  "owner_id": "f50ec0b7-f960-400d-91f0-c42a6d44e3d0"
-}
+Authorization: Bearer eyJraWQiOiJrUjE2SDlJUlcrSVZEYURzZW1jSkV1NWZKQnN6aElvY3NiVDFmRDVcL3lkOD0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI5ZGJjMjkxZC01YjZlLTRjMDItYmZiYS04MTIxNTc2YmRhMzUiLCJldmVudF9pZCI6IjhlZWRlNmZhLWM5MzMtNDNjZC05M2ViLTgzODNhZmVjZWM1MiIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2MTMxNjg2NjAsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5ldS13ZXN0LTEuYW1hem9uYXdzLmNvbVwvZXUtd2VzdC0xX2JncUpYWEl6NyIsImV4cCI6MTYxMzE3MjI2MCwiaWF0IjoxNjEzMTY4NjYwLCJqdGkiOiJlODU4MDUxMC1mYWI1LTRkZTEtOWIyNy0yNTZiMTcyNGFmYzMiLCJjbGllbnRfaWQiOiI0OWtvZGhkYmR2ZmNjYmVxNnM0MXY1YnY4diIsInVzZXJuYW1lIjoiOWRiYzI5MWQtNWI2ZS00YzAyLWJmYmEtODEyMTU3NmJkYTM1In0.Q393vdeh9CilMtm2uGbsCmVtKUsHgjGpdfkH2LBXLPDzvRmbT0mbaB8paENsg4-TpVFkDSPo5al0h-mu-CzFL-RPm0MghUqSNLheeRZV4mwmaVMrb4pMjbXwauzSqItBxue44QdA70K3gkzhWxMHPHLCpGX1GME5e2JgI3wboJJipb6eQSoQzPxjAQp2c1C11Cj4YCOmtZw8Sm6NXRpZk8RvO1yNf4NwGb-E21zBKnNXpK_e0ZUdGtlwAyiUafxoS1g3VXPY5OuTtxWN795tRRnZakJ8qUqN7Q_epolP-LO_O4cAN0t9513bXjQae7Uin_sxusaYqXCvrauVgTD5wA
 
 ###
 
@@ -12,8 +9,9 @@ Content-Type: application/json
 
 ###
 
-DELETE http://127.0.0.1:5000/lists/delete/293f4dec-71de-4ef8-935d-bfd216749419 HTTP/1.1
+DELETE http://127.0.0.1:5000/lists/delete/199c152a-2daf-4654-bb09-1b866f8f1754 HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJraWQiOiJrUjE2SDlJUlcrSVZEYURzZW1jSkV1NWZKQnN6aElvY3NiVDFmRDVcL3lkOD0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI5ZGJjMjkxZC01YjZlLTRjMDItYmZiYS04MTIxNTc2YmRhMzUiLCJldmVudF9pZCI6IjhlZWRlNmZhLWM5MzMtNDNjZC05M2ViLTgzODNhZmVjZWM1MiIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE2MTMxNjg2NjAsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5ldS13ZXN0LTEuYW1hem9uYXdzLmNvbVwvZXUtd2VzdC0xX2JncUpYWEl6NyIsImV4cCI6MTYxMzE3MjI2MCwiaWF0IjoxNjEzMTY4NjYwLCJqdGkiOiJlODU4MDUxMC1mYWI1LTRkZTEtOWIyNy0yNTZiMTcyNGFmYzMiLCJjbGllbnRfaWQiOiI0OWtvZGhkYmR2ZmNjYmVxNnM0MXY1YnY4diIsInVzZXJuYW1lIjoiOWRiYzI5MWQtNWI2ZS00YzAyLWJmYmEtODEyMTU3NmJkYTM1In0.Q393vdeh9CilMtm2uGbsCmVtKUsHgjGpdfkH2LBXLPDzvRmbT0mbaB8paENsg4-TpVFkDSPo5al0h-mu-CzFL-RPm0MghUqSNLheeRZV4mwmaVMrb4pMjbXwauzSqItBxue44QdA70K3gkzhWxMHPHLCpGX1GME5e2JgI3wboJJipb6eQSoQzPxjAQp2c1C11Cj4YCOmtZw8Sm6NXRpZk8RvO1yNf4NwGb-E21zBKnNXpK_e0ZUdGtlwAyiUafxoS1g3VXPY5OuTtxWN795tRRnZakJ8qUqN7Q_epolP-LO_O4cAN0t9513bXjQae7Uin_sxusaYqXCvrauVgTD5wA
 
 ###
 
@@ -22,7 +20,6 @@ Content-Type: application/json
 
 {
   "email": "robbiemcloughlin@gmail.com",
-  "username": "robbiemcloughlin@gmail.com",
   "password": "Password1@"
 }
 
@@ -32,7 +29,7 @@ POST http://127.0.0.1:5000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "username": "robbiemcloughlin@gmail.com",
+  "email": "robbiemcloughlin@gmail.com",
   "password": "Password1@"
 }
 
