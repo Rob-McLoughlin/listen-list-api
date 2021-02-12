@@ -43,13 +43,32 @@ def sign_in(email: str, password: str):
     finally:
       return response
 
-def confirm_user(email: str):
+def confirm_user_admin(email: str):
     client = boto3.client("cognito-idp")
     response = {"success": False, "details": ""}
     try:
         attempt = client.admin_confirm_sign_up(
             UserPoolId=utils.keys("cog_pool_id"),
             Username=email
+        )
+        response['success'] = True
+        response['details'] = attempt
+    except ClientError as e:
+        response['details'] = e.response['Error']['Message']
+    except ParamValidationError as e:
+        response['details'] = str(e)
+    finally:
+      return response
+
+
+def confirm_user(email: str, code: int):
+    client = boto3.client("cognito-idp")
+    response = {"success": False, "details": ""}
+    try:
+        attempt = client.confirm_sign_up(
+            ClientId=utils.keys("cog_client_id"),
+            Username=email,
+            ConfirmationCode=str(code)
         )
         response['success'] = True
         response['details'] = attempt

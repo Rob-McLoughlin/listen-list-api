@@ -68,7 +68,7 @@ def test_sign_in():
   assert 'User is not confirmed' in attempt['details']
 
   # Confirm the user
-  attempt = utils_user.confirm_user(email)
+  attempt = utils_user.confirm_user_admin(email)
   assert attempt['success'] == True
 
   # Use the correct password this time
