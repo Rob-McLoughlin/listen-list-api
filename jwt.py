@@ -57,7 +57,7 @@ def check_token_validity(token: str, token_type="id") -> Union[dict, bool]:
         return False
     # and the Audience  (use claims['client_id'] if verifying an access token)
     value_to_check = claims.get("aud") or claims.get("client_id")
-    if value_to_check != utils.keys("cog_app_id"):
+    if value_to_check != utils.keys("cog_client_id"):
         print("Token was not issued for this audience")
         return False
     # now we can use the claims
@@ -80,7 +80,7 @@ def extend_token(token: str) -> Union[dict, bool]:
     }
     response = client.admin_initiate_auth(
         UserPoolId=utils.keys('cog_pool_id'),
-        ClientId=utils.keys('cog_app_id'),
+        ClientId=utils.keys('cog_client_id'),
         AuthFlow='REFRESH_TOKEN_AUTH',
         AuthParameters=params
     )

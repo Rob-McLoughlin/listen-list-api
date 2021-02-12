@@ -14,5 +14,5 @@ def test_format_response():
 
 def test_keys():
     assert type(utils.keys()) == dict
-    assert type(utils.keys("cog_app_id")) == str
+    assert type(utils.keys("cog_client_id")) == str
     assert utils.keys("abc") == None
