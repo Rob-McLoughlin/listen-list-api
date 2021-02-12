@@ -8,7 +8,7 @@ from typing import Union
 import boto3
 
 
-def check_token_validity(token: str, token_type="id") -> Union[dict, bool]:
+def check_token_validity(token: str) -> Union[dict, bool]:
     """Checks the validity of a token
 
     Args:
