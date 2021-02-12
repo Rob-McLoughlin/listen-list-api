@@ -35,44 +35,59 @@ def create_list() -> dict:
     Returns:
         [dict]: [description]
     """
-    list_title = request.json.get("list_title") or "Listen List"
-    new_id = str(uuid.uuid4())
-    listen_list = ListenList(
-        list_id=new_id,
-        owner_id=request.json.get("owner_id"),
-        created_at=datetime.now(),
-        updated_at=datetime.now(),
-        list_title=list_title,
-        albums=[],
-    )
-    # Save the new list
-    listen_list.store()
-    # Return the list JSON
-    formatted = ListenListSchema().dump(listen_list)
-    response = utils.format_response(200, formatted)
-    return response
+    if request.headers.get('Authorization') == None:
+        return utils.format_response(403, 'Not Authorised')
+    token = request.headers.get('Authorization').split('Bearer ')[1]
+    validity = jwt.check_token_validity(token)
+    if validity:
+        user_id = validity['username']
+        list_title = "Listen List"
+        new_id = str(uuid.uuid4())
+        listen_list = ListenList(
+            list_id=new_id,
+            owner_id=user_id,
+            created_at=datetime.now(),
+            updated_at=datetime.now(),
+            list_title=list_title,
+            albums=[],
+        )
+        print(listen_list)
+        # Save the new list
+        listen_list.store()
+        # Return the list JSON
+        formatted = ListenListSchema().dump(listen_list)
+        response = utils.format_response(200, formatted)
+        return response
+    else:
+        response = utils.format_response(403, 'Not Authorised')
+        return response
 
 @app.route("/lists/delete/<list_id>", methods=["DELETE"])
 def delete_list(list_id):
-    ll = utils.get_ll(list_id)
-    ll.delete()
-    response = utils.format_response(200, 'Deleted List')
-    return response
+    if request.headers.get('Authorization') == None:
+        return utils.format_response(403, 'Not Authorised')
+    token = request.headers.get('Authorization').split('Bearer ')[1]
+    validity = jwt.check_token_validity(token)
+    if validity:
+        ll = utils.get_ll(list_id)
+        print(ll.owner_id)
+        # ll.delete()
+        response = utils.format_response(200, 'Deleted List')
+        return response
 
 @app.route("/users/create", methods=["POST"])
 def create_new_user():
-    username = request.json.get('username')
     email = request.json.get('email')
     password = request.json.get('password')
-    sign_up_request = utils_user.sign_up(username, email, password)
+    sign_up_request = utils_user.sign_up(email, password)
     return utils.format_response(200, sign_up_request)
     
 
 @app.route("/users/login", methods=["POST"])
 def sign_in():
-    username = request.json.get('username')
+    email = request.json.get('email')
     password = request.json.get('password')
-    sign_in_request = utils_user.sign_in(username, password)
+    sign_in_request = utils_user.sign_in(email, password)
     return utils.format_response(200, sign_in_request)
     
     
