@@ -88,9 +88,6 @@ def extend_token(token: str) -> Union[dict, bool]:
 
 if __name__ == "__main__":
     tokens = json.load(open('key.json'))
-    # token = "eyJraWQiOiJGZFwvZ0MwMVhWWFVCVWtUeTgzVlNmKzY1U21BNVE2ZXBCbDdNMmtBcEV5Zz0iLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI2N2I2NmY3Yy0wNDliLTRmYTktOWUwMi01MDc3YjU4NDNhMGYiLCJhdWQiOiI1bWp2dGhibjBycmtvczBvZDM5bGhqZDRuOSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJldmVudF9pZCI6ImYyMWFhMjk1LWY3ZWUtNGY2Ny04MTI0LWRmMTM0ZjZjNDE0NCIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNjEyNzMxMTIwLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuZXUtd2VzdC0xLmFtYXpvbmF3cy5jb21cL2V1LXdlc3QtMV9EQlVERkFRc0IiLCJjb2duaXRvOnVzZXJuYW1lIjoicm9iMiIsImV4cCI6MTYxMjczNDcyMCwiaWF0IjoxNjEyNzMxMTIwLCJlbWFpbCI6InJvYmJpZW1jbG91Z2hsaW5AZ21haWwuY29tIn0.cqhjQo5SzSU5cyZALimC7rOm5cnJiGRYJYXJcRM4s__cV5e3ntYJtN66i4INx1pcvtAxxD06TRHixiDgFxupoZsJVumlZVwDcnWOOz0XzrUEzXvXzMg7oRD5a-cLa-kkcDivwD6NZuZdwAR7kWDPhvYixmpKc0LEHbLbVOelEK4cADYU1GWespYJFNMtzS2qfbPl_Ca3NS2CZtbUzhBRwmyjMNvfjRtWUwN7LWqhrsOFt2j5j8e5X4R0QYA-EHTCARw2jRrduWVHkxFhzCBu0_1l5i4m0DiY4WSAvhH5cz-WSxm-4WG9gNo8zrfKRTYVdxZ8_msx8SWhD9pXWxAoaQ"
-    # token = tokens['AuthenticationResult']['IdToken']
     r_token = tokens['AuthenticationResult']['RefreshToken']
-    # check = check_token_validity(token)
     updated = extend_token(r_token)
     print(updated)
