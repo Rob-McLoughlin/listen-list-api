@@ -23,16 +23,43 @@ def sign_up(email: str, password: str):
       return response
 
 
-def sign_in(username: str, password: str):
+def sign_in(email: str, password: str):
     client = boto3.client("cognito-idp")
-    params = {"USERNAME": username, "PASSWORD": password}
-    response = client.admin_initiate_auth(
-        UserPoolId=utils.keys("cog_pool_id"),
-        ClientId=utils.keys("cog_client_id"),
-        AuthFlow="ADMIN_NO_SRP_AUTH",
-        AuthParameters=params,
-    )
-    return response
+    params = {"USERNAME": email, "PASSWORD": password}
+    response = {"success": False, "details": ""}
+    try:
+        attempt = client.admin_initiate_auth(
+            UserPoolId=utils.keys("cog_pool_id"),
+            ClientId=utils.keys("cog_client_id"),
+            AuthFlow="ADMIN_NO_SRP_AUTH",
+            AuthParameters=params,
+        )
+        response['success'] = True
+        response['details'] = attempt
+    except ClientError as e:
+        response['details'] = e.response['Error']['Message']
+    except ParamValidationError as e:
+        response['details'] = str(e)
+    finally:
+      return response
+
+def confirm_user(email: str):
+    client = boto3.client("cognito-idp")
+    response = {"success": False, "details": ""}
+    try:
+        attempt = client.admin_confirm_sign_up(
+            UserPoolId=utils.keys("cog_pool_id"),
+            Username=email
+        )
+        response['success'] = True
+        response['details'] = attempt
+    except ClientError as e:
+        response['details'] = e.response['Error']['Message']
+    except ParamValidationError as e:
+        response['details'] = str(e)
+    finally:
+      return response
+
 
 def delete_account(email: str) -> dict:
     """Deletes a user
