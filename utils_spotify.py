@@ -39,13 +39,18 @@ def sy_get_token() -> dict:
         raise ValueError(f"{r.status_code}, {r.text}")
 
 
-def sy_check_token() -> bool:
+def sy_check_token(token=None) -> bool:
     """Checks if the cached token dict is still in date
+
+    Args:
+        token (dict, optional): Optional token object, will use cached if not provided. Defaults to None.
 
     Returns:
         bool: Whether the token is valid or not
+
     """
-    token = json.loads(utils.keys('sy_token'))
+    if token == None:
+        token = json.loads(utils.keys('sy_token'))
     expiry_sec = token["expires_in"]
     created_at = token["created_at"]
     new_timestamp = created_at + expiry_sec
