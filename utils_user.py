@@ -79,6 +79,23 @@ def confirm_user(email: str, code: str):
     finally:
       return response
 
+def resend_confirmation_code(email: str):
+    client = boto3.client("cognito-idp")
+    response = {"success": False, "details": ""}
+    try:
+        attempt = client.resend_confirmation_code(
+            ClientId=utils.keys("cog_client_id"),
+            Username=email,
+        )
+        response['success'] = True
+        response['details'] = attempt
+    except ClientError as e:
+        response['details'] = e.response['Error']['Message']
+    except ParamValidationError as e:
+        response['details'] = str(e)
+    finally:
+      return response
+
 def reset_user_password(email: str):
     client = boto3.client("cognito-idp")
     response = {"success": False, "details": ""}
@@ -141,6 +158,4 @@ def delete_account(email: str) -> dict:
       return response
 
 if __name__ == "__main__":
-    # response = reset_user_password('robbiemcloughlin@gmail.com')
-    print(response)
     pass
