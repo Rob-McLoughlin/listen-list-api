@@ -3,3 +3,5 @@ node_modules/
 .serverless
 __pycache__
 credentials.json
+jwks.json
+key.json
