@@ -6,7 +6,8 @@ from datetime import datetime
 import uuid
 import decimal
 import base64
-from classes import ListenList, ListenListSchema, AlbumSchema
+from classes import ListenList, ListenListSchema, Album, AlbumSchema, AlbumCoverSchema
+import utils_spotify
 
 
 def format_response(status: int, body: dict) -> dict:
@@ -89,7 +90,7 @@ def dynamo_to_dict(dynamo_response: dict) -> dict:
     return obj
 
 
-def get_ll(list_id: str) -> dict:
+def get_ll(list_id: str) -> ListenList:
     """Returns a listen list from the database
 
     Args:
@@ -125,7 +126,15 @@ def get_ll(list_id: str) -> dict:
 def ll_create(data) -> ListenList:
     return ListenListSchema().load(data)
 
-if __name__ == "__main__":
+def album_from_sy_data(sy_data: dict) -> Album:
+    """Takes an album response from the Spotify API and turns it into an Album
+
+    Args:
+        sy_data (dict): Data from the Spotify API
+
+    Returns:
+        Album: The Album object
+    """
     images = [
         {
             "height": 640,
@@ -151,48 +160,24 @@ if __name__ == "__main__":
         }
     ]
     album_data = {
-        "spotify_id": "6GjwtEZcfenmOf6l18N7T7",
-        "spotify_url": "https://open.spotify.com/album/6GjwtEZcfenmOf6l18N7T7",
-        "title": "OK Computer",
-        "images": images,
+        "spotify_id": sy_data['id'],
+        "spotify_url": sy_data['external_urls']['spotify'],
+        "title": sy_data["name"],
+        "images": sy_data['images'],
         "artists": artists,
         "rating": 0,
         "listened_to": False,
     }
+    a = AlbumSchema().load(album_data)
+    return a
 
-    kid_a_data = {
-        "spotify_id": "6dVIqQ8qmQ5GBnJ9shOYGE",
-        "spotify_url": "https://open.spotify.com/album/6GjwtEZcfenmOf6l18N7T7",
-        "title": "Kid A",
-        "images": images,
-        "artists": artists,
-        "rating": 0,
-        "listened_to": False,
-    }
-
-    albums = [AlbumSchema().dump(album_data)]
-    ll_data = {
-        "list_id": "abc-124",
-        "owner_id": "xyz",
-        "list_title": "List Title One",
-        "created_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "updated_at": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "albums": albums,
-    }
-    ll = ListenListSchema().load(ll_data)
-    # ll_store(listen_list)
-    # print(ListenListSchema().dump(listen_list))
-    # Store the list
-    # ll_store(listen_list)
-    # Get a list
-    # ll = get_ll('abc-123')
-    # Add an album
-    ll.add_album(AlbumSchema().load(kid_a_data))
-    print([album.title for album in ll.albums])
-    # Remove the album
-    ll.remove_albums(['6GjwtEZcfenmOf6l18N7T7'])
-    print([album.title for album in ll.albums])
-    # print(ListenListSchema().dump(ll))
-    # Save the List
+if __name__ == "__main__":
+    in_rainbows = utils_spotify.sy_get_album('7eyQXxuf2nGj9d2367Gi5f')
+    new_album = album_from_sy_data(in_rainbows)
+    ll = get_ll('abc-123')
+    for album in ll.albums:
+        print(album.title)
+    ll.add_album(new_album)
+    for album in ll.albums:
+        print(album.title)
     ll.store()
-    ll.delete()
