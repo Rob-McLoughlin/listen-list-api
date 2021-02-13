@@ -95,7 +95,10 @@ class ListenList:
         Args:
             album (Album): An album.
         """
-        self.albums.append(album)
+        if album.spotify_id not in [a.spotify_id for a in self.albums]:
+            self.albums.append(album)
+        else:
+            print(f"{album.title} is already in this list.")
 
     def remove_albums(self, album_ids: list):
         """Removes an album based on the ID

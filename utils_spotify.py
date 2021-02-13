@@ -6,19 +6,18 @@ import base64
 import urllib.parse
 import time
 from datetime import datetime
+import boto3
+from classes import Album, AlbumSchema
 
 
-def sy_get_token(client_id: str, client_secret: str) -> dict:
-    """Gets a Spotify token
-
-    Args:
-        client_id (str): Client ID
-        client_secret (str): Client secret
+def sy_get_token() -> dict:
+    """Gets a Spotify token using stored credentials
 
     Returns:
         dict: Response with tokens
     """
-
+    client_id = utils.keys('sy_client_id')
+    client_secret = utils.keys('sy_client_secret')
     url = "https://accounts.spotify.com/api/token"
     data = {"grant_type": "client_credentials"}
     r = requests.post(url, data, auth=HTTPBasicAuth(client_id, client_secret))
@@ -26,24 +25,49 @@ def sy_get_token(client_id: str, client_secret: str) -> dict:
         token = r.json()
         timestamp = round(time.time())
         token["created_at"] = timestamp
+        # Save the token
+        existing_keys = utils.keys()
+        client = boto3.client('secretsmanager')
+        data = {"token": token}
+        existing_keys['sy_token'] = json.dumps(token)
+        client.put_secret_value(
+            SecretId='ListenList',
+            SecretString=json.dumps(existing_keys)
+        )
         return token
     else:
         raise ValueError(f"{r.status_code}, {r.text}")
 
 
-def sy_check_token(token: dict) -> bool:
-    """Checks if a token dict is still in date
+def sy_check_token(token=None) -> bool:
+    """Checks if the cached token dict is still in date
 
     Args:
-        token (dict): The token object
+        token (dict, optional): Optional token object, will use cached if not provided. Defaults to None.
 
     Returns:
         bool: Whether the token is valid or not
+
     """
+    if token == None:
+        token = json.loads(utils.keys('sy_token'))
     expiry_sec = token["expires_in"]
     created_at = token["created_at"]
     new_timestamp = created_at + expiry_sec
     return new_timestamp > float(time.time())
+
+def sy_access_token() -> dict:
+    """Utility function to return the access token cached token if valid or a new one if not.
+
+    Returns:
+        dict: A token
+    """
+    cached_token = utils.keys('sy_token')
+    if sy_check_token():
+        return json.loads(cached_token).get('access_token')
+    else:
+        new_token = sy_get_token()
+        return new_token.get('access_token')
 
 
 def sy_search(term: str, key: dict, search_type="album,artist"):
@@ -63,15 +87,23 @@ def sy_search(term: str, key: dict, search_type="album,artist"):
     else:
         raise ValueError(f"{r.status_code}, {r.text}")
 
+def sy_get_album(album_id: str) -> dict:
+    """Returns an album
+
+    Args:
+        album_id (str): the spotify album id
+
+    Returns:
+        dict: The album object
+    """
+    token = sy_access_token()
+    headers = {
+        'Authorization': f"Bearer {token}"
+    }
+    endpoint = f"https://api.spotify.com/v1/albums/{album_id}"
+    r = requests.get(endpoint, headers=headers)
+    return r.json()
 
 if __name__ == "__main__":
-    client_id = utils.keys("sy_client_id")
-    client_secret = utils.keys("sy_client_secret")
-    token = sy_get_token(client_id, client_secret)
-    print("Token", token)
-    # results = sy_search('Kid A', token)
-    # albums = [album for album in results['albums']['items']]
-    # artists = [artist for artist in results['artists']['items']]
-    # print(f"There are {len(albums)} albums and {len(artists)} artists found")
-    # print('Artists:', [artist['name'] for artist in artist])
-    # print(results)
+    a = sy_get_album('7eyQXxuf2nGj9d2367Gi5f')
+    # print(a)
