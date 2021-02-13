@@ -61,14 +61,14 @@ def confirm_user_admin(email: str):
       return response
 
 
-def confirm_user(email: str, code: int):
+def confirm_user(email: str, code: str):
     client = boto3.client("cognito-idp")
     response = {"success": False, "details": ""}
     try:
         attempt = client.confirm_sign_up(
             ClientId=utils.keys("cog_client_id"),
             Username=email,
-            ConfirmationCode=str(code)
+            ConfirmationCode=code
         )
         response['success'] = True
         response['details'] = attempt
@@ -79,6 +79,41 @@ def confirm_user(email: str, code: int):
     finally:
       return response
 
+def reset_user_password(email: str):
+    client = boto3.client("cognito-idp")
+    response = {"success": False, "details": ""}
+    try:
+        attempt = client.forgot_password(
+            ClientId=utils.keys("cog_client_id"),
+            Username=email,
+        )
+        response['success'] = True
+        response['details'] = attempt
+    except ClientError as e:
+        response['details'] = e.response['Error']['Message']
+    except ParamValidationError as e:
+        response['details'] = str(e)
+    finally:
+      return response
+
+def confirm_reset_password(email: str, code: str, new_password: str):
+    client = boto3.client("cognito-idp")
+    response = {"success": False, "details": ""}
+    try:
+        attempt = client.confirm_forgot_password(
+            ClientId=utils.keys("cog_client_id"),
+            Username=email,
+            ConfirmationCode=str(code),
+            Password=new_password
+        )
+        response['success'] = True
+        response['details'] = attempt
+    except ClientError as e:
+        response['details'] = e.response['Error']['Message']
+    except ParamValidationError as e:
+        response['details'] = str(e)
+    finally:
+      return response
 
 def delete_account(email: str) -> dict:
     """Deletes a user
@@ -106,4 +141,6 @@ def delete_account(email: str) -> dict:
       return response
 
 if __name__ == "__main__":
+    # response = reset_user_password('robbiemcloughlin@gmail.com')
+    print(response)
     pass

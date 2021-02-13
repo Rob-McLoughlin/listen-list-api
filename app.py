@@ -81,6 +81,13 @@ def create_new_user():
     password = request.json.get('password')
     sign_up_request = utils_user.sign_up(email, password)
     return utils.format_response(200, sign_up_request)
+
+@app.route("/users/confirm", methods=["POST"])
+def confirm_new_user():
+    email = request.json.get('email')
+    code = request.json.get('code')
+    confirm_user_request = utils_user.confirm_user(email, code)
+    return utils.format_response(200, confirm_user_request)
     
 
 @app.route("/users/login", methods=["POST"])
