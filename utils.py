@@ -172,12 +172,4 @@ def album_from_sy_data(sy_data: dict) -> Album:
     return a
 
 if __name__ == "__main__":
-    in_rainbows = utils_spotify.sy_get_album('7eyQXxuf2nGj9d2367Gi5f')
-    new_album = album_from_sy_data(in_rainbows)
-    ll = get_ll('abc-123')
-    for album in ll.albums:
-        print(album.title)
-    ll.add_album(new_album)
-    for album in ll.albums:
-        print(album.title)
-    ll.store()
+    pass
