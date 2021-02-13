@@ -6,6 +6,7 @@ import base64
 import urllib.parse
 import time
 from datetime import datetime
+import boto3
 
 
 def sy_get_token(client_id: str, client_secret: str) -> dict:
@@ -26,6 +27,15 @@ def sy_get_token(client_id: str, client_secret: str) -> dict:
         token = r.json()
         timestamp = round(time.time())
         token["created_at"] = timestamp
+        # Save the token
+        existing_keys = utils.keys()
+        client = boto3.client('secretsmanager')
+        data = {"token": token}
+        existing_keys['sy_token'] = json.dumps(token)
+        client.put_secret_value(
+            SecretId='ListenList',
+            SecretString=json.dumps(existing_keys)
+        )
         return token
     else:
         raise ValueError(f"{r.status_code}, {r.text}")
@@ -68,7 +78,7 @@ if __name__ == "__main__":
     client_id = utils.keys("sy_client_id")
     client_secret = utils.keys("sy_client_secret")
     token = sy_get_token(client_id, client_secret)
-    print("Token", token)
+    # print("Token", token)
     # results = sy_search('Kid A', token)
     # albums = [album for album in results['albums']['items']]
     # artists = [artist for artist in results['artists']['items']]
