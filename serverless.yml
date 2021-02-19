@@ -23,7 +23,7 @@ custom:
 provider:
   name: aws
   runtime: python3.8
-  stage: ${opt:stage, 'dev'}
+  stage: ${opt:stage, 'alpha'}
   region: eu-west-1
   apiGateway:
     shouldStartNameWithService: true
