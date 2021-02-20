@@ -15,6 +15,7 @@
     "husky": "^4.3.8",
     "semantic-release": "^17.3.7",
     "serverless-domain-manager": "^5.1.0",
+    "serverless-dotenv-plugin": "^3.5.1",
     "serverless-python-requirements": "^5.1.0",
     "serverless-wsgi": "^1.7.6"
   },

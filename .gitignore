@@ -5,3 +5,4 @@ __pycache__
 credentials.json
 jwks.json
 .pytest_cache
+.env
