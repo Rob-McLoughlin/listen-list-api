@@ -1,25 +1,52 @@
-service: serverless-flask
+service: listen-list
+frameworkVersion: ^2.11.1
 
 plugins:
   - serverless-python-requirements
   - serverless-wsgi
+  - serverless-domain-manager
+  - serverless-dotenv-plugin
 
 custom:
   wsgi:
-    app: app.app
+    app: api.app
     packRequirements: false
+
   pythonRequirements:
     dockerizePip: non-linux
+
+  stage: ${opt:stage, self:provider.stage}
+
+  domains:
+    prod: api.listenlist.io
+    staging: ${env:STAGING_API}
+    dev: ${env:DEV_API}
+
+  customDomain:
+    basePath: ""
+    certificateName: '*.listenlist.io'
+    domainName: ${self:custom.domains.${self:custom.stage}}
+    stage: "${self:custom.stage}"
+    createRoute53Record: true
 
 provider:
   name: aws
   runtime: python3.8
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   region: eu-west-1
+  apiGateway:
+    shouldStartNameWithService: true
 
 functions:
   app:
-    handler: wsgi.handler
+    handler: wsgi_handler.handler
+    package:
+      exclude:
+        - tests/**
+        - schema/**
+        - .vscode/**
+        - .pytest_cache/**
+        - .circleci/**
     events:
       - http: ANY /
       - http: 'ANY {proxy+}'
