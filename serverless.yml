@@ -36,6 +36,7 @@ provider:
   region: eu-west-1
   apiGateway:
     shouldStartNameWithService: true
+  role: ${env:ROLE}
 
 functions:
   app:
